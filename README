@@ -1,0 +1,28 @@
+Property Chains Helper Extension
+
+        Version 0.1.0
+        Marco Falda
+
+This is free software licenced under the GNU General Public Licence. Please
+see http://www.gnu.org/copyleft/gpl.html for further details, including the
+full text and terms of the licence.
+
+== Overview ==
+
+Property Chains Helper is an extension to MediaWiki 
+to help completing property chains in queries involving multiple categories.
+
+For more information, see the extension homepage at:
+https://www.mediawiki.org/wiki/Extension:PropChainsHelper
+
+== Requirements ==
+
+This version of the Property Chains Helper extension requires MediaWiki 1.31 or higher.
+
+== Installation ==
+
+To install the extension, place the entire 'PropChainsHelper' directory within
+your MediaWiki 'extensions' directory, then add the following line to your
+'LocalSettings.php' file:
+
+     wfLoadExtension( 'PropChainsHelper' );
