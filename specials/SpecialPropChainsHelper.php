@@ -70,7 +70,9 @@ class SpecialPropChainsHelper extends SpecialPage
 			$criteria = implode($sepF , $this->completeChains($this->category, $criteria, true));
 			$printouts = implode($sepF, $this->completeChains($this->category, $printouts, false));
 			// e.g.: http://localhost/wiki/Special:Ask?q=[[Category:Experiments]]%0A[[Start+date::%E2%89%A51950]][[Start+date::%E2%89%A41960]]&po=?ID%20Experimental%20code%0A?Project%0A?Topic%0A?Start%20date%0A?End%20date%0A?Animal%20permit%0A?Project%20Manager&p[mainlabel]=ID&eq=yes
-			$url = $base_domain->getLocalURL() . "&q=[[Category:" . $this->category . "]]%0A$criteria&po=$printouts";
+			$url = $base_domain->getLocalURL();
+			$sep = str_contains($url, '?') ? '&' : '?';
+			$url .= $sep . "q=[[Category:" . $this->category . "]]%0A$criteria&po=$printouts";
 			$ret .= '<button onclick="window.location.href=\'' . $url . '\'">Run query</button><hr />';
 			$ret .= Xml::closeElement('p');
 			$out->addHTML($ret);
