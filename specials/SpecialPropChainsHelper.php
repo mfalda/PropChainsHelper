@@ -92,18 +92,17 @@ class SpecialPropChainsHelper extends SpecialPage
         $res = [];
         foreach ($items as $item) {
             if ($crit) {
-                    $elems = preg_split("/([<>~!=])/", $item, 2, PREG_SPLIT_DELIM_CAPTURE);
-                    $item = $elems[0];
-                    $oper = $elems[1];
-                    $rest = $elems[2];
-                    $rest = str_replace('<=', '::≤', $rest);
-                    $rest = str_replace('>=', '::≥', $rest);
-                    $rest = str_replace('<', '::<', $rest);
-                    $rest = str_replace('>', '::>', $rest);
-                    $rest = str_replace('<>', '::!', $rest);
-                    $rest = str_replace('~', '::~', $rest);
-                    $rest = str_replace('!~', '::!~', $rest);
-                    $rest = str_replace('=', '::', $rest);
+                    $elems = preg_split("/([<>~!=]+)/", $item, 2, PREG_SPLIT_DELIM_CAPTURE);
+                    $item = trim($elems[0]);
+                    $rest = $elems[1] . $elems[2];
+                    $rest = str_replace('<=', '≤', $rest);
+                    $rest = str_replace('>=', '≥', $rest);
+                    $rest = str_replace('<', '<', $rest);
+                    $rest = str_replace('>', '>', $rest);
+                    $rest = str_replace('<>', '!', $rest);
+                    $rest = str_replace('~', '~', $rest);
+                    $rest = str_replace('!~', '!~', $rest);
+                    $rest = str_replace('=', '', $rest);
             }
             $from = $pchCatLevels[$category];
             $item = str_replace('_', ' ', $item);
@@ -127,7 +126,7 @@ class SpecialPropChainsHelper extends SpecialPage
             if ($chains !== '' && strpos($item, $chains) === false)
                 $item = str_replace($item, $chains . '.' . $item, $item);
             if ($crit)
-                $res[] = "[[$item $oper $rest]]";
+                $res[] = "[[$item::$oper$rest]]";
             else
                 $res[] =  $item;
         }
@@ -180,3 +179,4 @@ class SpecialPropChainsHelper extends SpecialPage
 	}
 
 }
+
