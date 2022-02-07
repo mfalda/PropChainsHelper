@@ -71,7 +71,7 @@ class SpecialPropChainsHelper extends SpecialPage
 			$printouts = implode($sepF, $this->completeChains($this->category, $printouts, false));
 			// e.g.: http://localhost/wiki/Special:Ask?q=[[Category:Experiments]]%0A[[Start+date::%E2%89%A51950]][[Start+date::%E2%89%A41960]]&po=?ID%20Experimental%20code%0A?Project%0A?Topic%0A?Start%20date%0A?End%20date%0A?Animal%20permit%0A?Project%20Manager&p[mainlabel]=ID&eq=yes
 			$url = $base_domain->getLocalURL();
-			$sep = str_contains($url, '?') ? '&' : '?';
+			$sep = strpos($url, '?') !== false ? '&' : '?';
 			$url .= $sep . "q=[[Category:" . $this->category . "]]%0A$criteria&po=$printouts";
 			$ret .= '<button onclick="window.location.href=\'' . $url . '\'">Run query</button><hr />';
 			$ret .= Xml::closeElement('p');
@@ -92,18 +92,24 @@ class SpecialPropChainsHelper extends SpecialPage
         $res = [];
         foreach ($items as $item) {
             if ($crit) {
-                    $item = str_replace('<=', '::⩽', $item);
-                    $item = str_replace('>=', '::⩾', $item);
-                    $item = str_replace('<', '::<', $item);
-                    $item = str_replace('>', '::>', $item);
-                    $item = str_replace('=', '::', $item);
-                    $item = "[[$item]]";
+                    $elems = preg_split("/([<>~!=])/", $item, 2, PREG_SPLIT_DELIM_CAPTURE);
+                    $item = $elems[0];
+                    $oper = $elems[1];
+                    $rest = $elems[2];
+                    $rest = str_replace('<=', '::≤', $rest);
+                    $rest = str_replace('>=', '::≥', $rest);
+                    $rest = str_replace('<', '::<', $rest);
+                    $rest = str_replace('>', '::>', $rest);
+                    $rest = str_replace('<>', '::!', $rest);
+                    $rest = str_replace('~', '::~', $rest);
+                    $rest = str_replace('!~', '::!~', $rest);
+                    $rest = str_replace('=', '::', $rest);
             }
             $from = $pchCatLevels[$category];
             $item = str_replace('_', ' ', $item);
             $pl = $pchPropLevels[$item];
-			$chainNum = $pl[0];
-			$to = $pl[1];
+            $chainNum = $pl[0];
+	    $to = $pl[1];
             if ($from === $to)
                 $chains = '';
             else if ($from > $to) {
@@ -120,7 +126,10 @@ class SpecialPropChainsHelper extends SpecialPage
             }
             if ($chains !== '' && strpos($item, $chains) === false)
                 $item = str_replace($item, $chains . '.' . $item, $item);
-            $res[] =  $item;
+            if ($crit)
+                $res[] = "[[$item $oper $rest]]";
+            else
+                $res[] =  $item;
         }
 
         return $res;
